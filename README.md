@@ -13,6 +13,7 @@ It handles the users, stores the files and interacts with the DLBS.
 ###Set up your development environment
 
 Dependencies:
+
  * Vagrant
  * Virtualbox
 
