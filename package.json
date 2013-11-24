@@ -1,0 +1,13 @@
+{
+  "name": "TeXpose",
+  "description": "",
+  "version": "0.1.0",
+  "author": "leopnadi",
+  "dependencies": {
+    "restify": "*",
+    "bcrypt-nodejs": "*",
+    "mongoose": "*",
+    "base58-native": "*"
+  },
+  "devDependencies": {}
+}

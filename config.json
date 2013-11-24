@@ -1,0 +1,4 @@
+{
+  "database": "mongodb://localhost/texpose",
+  "session_ttl": 172800
+}
