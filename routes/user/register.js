@@ -1,4 +1,4 @@
-var user = require('../functions/user.js');
+var user = require('../../functions/user.js');
 var restify = require('restify');
 
 module.exports = function(req, res, next) {
@@ -34,5 +34,4 @@ var checkData = function(data, callback) {
         callback(new restify.InvalidContentError('Missing one or more parameters'));
         return;
     }
-    callback(new restify.InvalidContentError('Error parsing content'));
 };

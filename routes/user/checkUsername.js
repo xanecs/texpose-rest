@@ -1,4 +1,4 @@
-var user = require('../functions/user.js');
+var user = require('../../functions/user.js');
 var restify = require('restify');
 
 module.exports = function(req, res, next) {

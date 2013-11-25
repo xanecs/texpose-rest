@@ -25,34 +25,14 @@ server.use(restify.CORS());
 server.use(restify.fullResponse());
 server.use(restify.bodyParser({ mapParams: false }));
 
-/*
-server.use(function(req, res, next){
-  var checkRaw = new RegExp('^\/raw');
-  if (checkRaw.exec(req.url)) {
-    res.header('Content-Type', 'application/octet-stream');
-  }
-  return next();
-});
-*/
+server.post('/auth/login', routes.auth.login);
+server.post('/user/register', routes.user.register);
+server.get('/user/checkusername/:username', routes.user.checkUsername);
+server.post('/auth/renewtoken', routes.auth.renewToken);
+server.post('/auth/getuserinfo', routes.auth.getUserInfo);
+server.post('/project/new', routes.project.new);
+server.post('/project/list', routes.project.list);
 
-server.get('/hash/:input/[:salt]', function(req, res, next){
-  console.log(req.url);
-  res.send(200, user.calculateHash(req.params.input));
-  return(next);
-});
-
-server.get('/raw/test', function(req, res, next){
-  console.log(req.url);
-  res.send(200, 'Kein Json');
-  return(next);
-});
-
-server.post('/login', routes.login);
-server.post('/register', routes.register);
-server.get('/checkusername/:username', routes.checkUsername);
-server.post('/renewtoken', routes.renewToken);
-server.post('/getuserinfo', routes.getUserInfo);
-
-server.listen(3000, function() {
-  console.log('Server listening on port 3000');
+server.listen(config.port, function() {
+  console.log('Server listening on port ' + config.port);
 });

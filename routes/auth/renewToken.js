@@ -1,5 +1,5 @@
 var restify = require('restify');
-var authentication = require('../functions/authentication.js');
+var authentication = require('../../functions/authentication.js');
 
 module.exports = function(req, res) {
 	var authToken = req.body.token;

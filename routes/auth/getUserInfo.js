@@ -1,6 +1,6 @@
 var restify = require('restify');
-var user = require('../functions/user.js');
-var authentication = require('../functions/authentication.js');
+var user = require('../../functions/user.js');
+var authentication = require('../../functions/authentication.js');
 
 module.exports = function(req, res) {
 	checkData(req.body, function(err) {

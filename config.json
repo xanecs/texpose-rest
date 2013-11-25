@@ -1,4 +1,6 @@
 {
   "database": "mongodb://localhost/texpose",
-  "session_ttl": 172800
+  "session_ttl": 172800,
+  "port": 3000,
+  "data_dir": "/var/texpose-projects"
 }

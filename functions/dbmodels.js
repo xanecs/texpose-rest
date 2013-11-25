@@ -32,8 +32,18 @@ exports.authToken = mongoose.model('AuthToken', {
 });
 
 exports.project = mongoose.model('Project', {
-  "token": String,
-  "username": String,
-  "lastuse": Date,
-  "ip": String
+  "name": String,
+  "description": String,
+  "created": {type: Date, default: Date.now()},
+  "permissions": [
+    {
+      "username": String,
+      "role": String
+    }
+  ]
+});
+
+exports.file = mongoose.model('File', {
+  "project": mongoose.Schema.Types.ObjectId,
+  "path": String
 });

@@ -1,5 +1,15 @@
-exports.login = require('./login.js');
-exports.register = require('./register.js');
-exports.checkUsername = require('./checkUsername.js');
-exports.renewToken = require('./renewToken.js');
-exports.getUserInfo = require('./getUserInfo.js');
+module.exports = {
+	auth: {
+		login: require('./auth/login.js'),
+		renewToken: require('./auth/renewToken.js'),
+		getUserInfo: require('./auth/getUserInfo.js')
+	},
+	user: {
+		register: require('./user/register.js'),
+		checkUsername: require('./user/checkUsername.js')
+	},
+	project: {
+		new: require('./project/new.js'),
+		list: require('./project/list.js')
+	}
+};
