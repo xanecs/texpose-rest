@@ -41,3 +41,17 @@ exports.listProjects = function(options, callback) {
 		callback(null, result);
 	});
 };
+
+exports.exists = function(options, callback) {
+	dbmodels.project.findById(options.project, function(err, result) {
+		if(err) {
+			callback(new restify.InternalError('Error while querying database'));
+			return;
+		}
+		if(result) {
+			callback(null, true);
+		} else {
+			callback(null, false);
+		}
+	});
+}

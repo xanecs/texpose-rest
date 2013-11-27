@@ -11,5 +11,8 @@ module.exports = {
 	project: {
 		new: require('./project/new.js'),
 		list: require('./project/list.js')
+	},
+	file: {
+		new: require('./file/new.js')
 	}
 };

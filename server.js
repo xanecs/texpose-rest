@@ -32,7 +32,7 @@ server.post('/auth/renewtoken', routes.auth.renewToken);
 server.post('/auth/getuserinfo', routes.auth.getUserInfo);
 server.post('/project/new', routes.project.new);
 server.post('/project/list', routes.project.list);
-
+server.post('/file/new', routes.file.new);
 server.listen(config.port, function() {
   console.log('Server listening on port ' + config.port);
 });
