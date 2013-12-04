@@ -54,4 +54,20 @@ exports.exists = function(options, callback) {
 			callback(null, false);
 		}
 	});
-}
+};
+
+exports.isAuthenticated = function(options, callback) {
+	exports.listProjects({username: options.username}, function(err, result){
+		if(err) {
+			callback(err);
+			return;
+		}
+		for(var i = 0; i < result.length; i++) {
+			if(result[i]._id == options.project) {
+				callback(null, true);
+				return;
+			}
+		}
+		callback(new restify.InvalidArgumentError('You are not authenticated for this project'));
+	});
+};

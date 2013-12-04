@@ -13,6 +13,8 @@ module.exports = {
 		list: require('./project/list.js')
 	},
 	file: {
-		new: require('./file/new.js')
+		new: require('./file/new.js'),
+		get: require('./file/get.js'),
+		list: require('./file/list.js')
 	}
 };
