@@ -1,6 +1,7 @@
 var dbmodels = require('./dbmodels.js');
 var restify = require('restify');
 var fs = require('fs');
+var nodefs = require('node-fs')
 var config = require('../config.json');
 var project = require('./project.js')
 
@@ -24,7 +25,16 @@ exports.saveFile = function(options, file, callback) {
 					callback(err);
 					return;
 				}
-				fs.writeFile(config.data_dir + '/' + options.project + '/' + options.path, file, function(err) {});
+				fs.mkdir(config.data_dir + '/' + options.project + '/' + options.path.substring(0, options.path.lastIndexOf("/")), 0777, true, function (err) {
+				    if (err) {
+				    	console.log(err);
+				    	return;
+				    }
+				    fs.writeFile(config.data_dir + '/' + options.project + '/' + options.path, file, function(err) {
+				    	console.log(err);
+				    });
+				});
+				
 				
 				var newFile = new dbmodels.file({
 					project: options.project,
@@ -52,7 +62,7 @@ var exists = function(options, callback) {
 				if(exists) {
 					callback(null, true);
 				} else {
-					result.remove();
+					dbmodels.file.remove({_id: result._id}, function(err){  });
 					callback(null, false);
 				}
 			});
@@ -63,18 +73,30 @@ var exists = function(options, callback) {
 };
 
 exports.deleteFile = function(options, callback) {
-
+	dbmodels.file.remove({path: options.path, project: options.project}, function(err, result){
+		if(err) {
+			callback(new restify.InternalError('Error while removing item from database'));
+			return;
+		}
+		callback(null);
+	});
+	fs.unlink(options.path, function(err){  });
 };
 
 exports.getFile = function(options, callback) {
-	exists({project: options.project, path: options.path}, function(err, result) {
+	exists({project: options.project, path: options.path, fs: true}, function(err, result) {
 		if(err) {
 			callback(err);
+			return;
+		}
+		if(!result) {
+			callback(new restify.InvalidArgumentError('File doesn\'t exist'));
 			return;
 		}
 		fs.readFile(config.data_dir + '/' + options.project + '/' + options.path, function(err, data) {
 			if(err) {
 				callback(new restify.InternalError('Error while reading file'));
+				return;
 			}
 			callback(null, data);
 		});
@@ -102,17 +124,17 @@ exports.listFiles = function(options, callback) {
 		        var wantedNode = chain[j];
 		        var lastNode = currentNode;
 		        for (var k = 0; k < currentNode.length; k++) {
-		            if (currentNode[k].name == wantedNode) {
-		                currentNode = currentNode[k].data;
+		            if (currentNode[k].data == wantedNode) {
+		                currentNode = currentNode[k].children;
 		                break;
 		            }
 		        }
 
 		        if (lastNode == currentNode) {
 		        	if(chain.length - 1 != j) {
-		            	var newNode = currentNode[k] = {data: wantedNode, children: []};
+		            	var newNode = currentNode[k] = {data: wantedNode, attr: {leaf: false} , children: []};
 		        	} else {
-		        		var newNode = currentNode[k] = wantedNode;
+		        		var newNode = currentNode[k] = {data: wantedNode, attr: {path: input[i], leaf: true}};
 		        	}
 		            currentNode = newNode.children;
 		        }

@@ -4,30 +4,27 @@ var file = require('../../functions/files.js');
 var authentication = require('../../functions/authentication.js');
 
 module.exports = function(req, res) {
-	checkData(req.params, function(err) {
+	checkData(req.body, function(err) {
 		if(err) {
 			res.send(err);
 			return;
 		}
-		authentication.checkAuthentication({token: req.params.token, ip: req.connection.remoteAddress}, function(err, result) {
+		authentication.checkAuthentication({token: req.body.token, ip: req.connection.remoteAddress}, function(err, result) {
 			if(err) {
 				res.send(err);
 				return;
 			}
-			project.isAuthenticated({username: result, project: req.params.project}, function(err, result){
+			project.isAuthenticated({username: result, project: req.body.project}, function(err, result){
 				if(err) {
 					res.send(err);
 					return;
 				}
-				file.getFile({project: req.params.project, path: decodeURIComponent(req.params.path)}, function(err, file){
+				file.deleteFile({project: req.body.project, path: decodeURIComponent(req.body.path)}, function(err, file){
 					if(err) {
 						res.send(err);
 						return;
 					}
-					res.setHeader('content-type', 'application/octet-stream');
-					res.writeHead(200);
-					res.write(file);
-					res.end();
+					res.send({status: 'SUCCESS'});
 				});
 			});
 		});

@@ -15,6 +15,7 @@ module.exports = {
 	file: {
 		new: require('./file/new.js'),
 		get: require('./file/get.js'),
-		list: require('./file/list.js')
+		list: require('./file/list.js'),
+		delete: require('./file/delete.js')
 	}
 };

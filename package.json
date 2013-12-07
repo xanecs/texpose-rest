@@ -7,7 +7,8 @@
     "restify": "*",
     "bcrypt-nodejs": "*",
     "mongoose": "*",
-    "base58-native": "*"
+    "base58-native": "*",
+    "node-fs": "*"
   },
   "devDependencies": {}
 }
