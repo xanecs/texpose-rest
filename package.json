@@ -8,7 +8,8 @@
     "bcrypt-nodejs": "*",
     "mongoose": "*",
     "base58-native": "*",
-    "node-fs": "*"
+    "node-fs": "*",
+    "colors": "*"
   },
   "devDependencies": {}
 }

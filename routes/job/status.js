@@ -1,7 +1,7 @@
 var restify = require('restify');
-var project = require('../../functions/project.js');
-var file = require('../../functions/files.js');
 var authentication = require('../../functions/authentication.js');
+var config = require('../../config.json');
+var dlbs = require('../../functions/dlbs.js');
 
 module.exports = function(req, res) {
 	checkData(req.body, function(err) {
@@ -9,23 +9,24 @@ module.exports = function(req, res) {
 			res.send(err);
 			return;
 		}
+
 		authentication.checkAuthentication({token: req.body.token, ip: req.connection.remoteAddress}, function(err, result) {
 			if(err) {
 				res.send(err);
 				return;
 			}
-			project.isAuthenticated({username: result, project: req.body.project}, function(err, result){
+			dlbs.isAuthenticated({username: result, jobid: req.body.jobid}, function(err, result){
 				if(err) {
 					res.send(err);
 					return;
 				}
-				file.deleteFile({project: req.body.project, path: req.body.path}, function(err, file){
+				dlbs.getStatus({jobid: req.body.jobid}, function(err, result) {
 					if(err) {
 						res.send(err);
 						return;
 					}
-					res.send({status: 'SUCCESS'});
-				});
+					res.send(result);
+				})
 			});
 		});
 		
@@ -33,7 +34,7 @@ module.exports = function(req, res) {
 };
 
 var checkData = function(data, callback) {
-	if(data.project && data.token && data.path) {
+	if(data.token && data.jobid) {
 		callback(null);
 	} else {
 		callback(new restify.InvalidContentError('Missing one or more parameters'));

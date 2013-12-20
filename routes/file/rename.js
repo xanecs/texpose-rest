@@ -19,7 +19,7 @@ module.exports = function(req, res) {
 					res.send(err);
 					return;
 				}
-				file.deleteFile({project: req.body.project, path: req.body.path}, function(err, file){
+				file.renameFile({project: req.body.project, path: req.body.path, newpath: req.body.newpath}, function(err, file){
 					if(err) {
 						res.send(err);
 						return;
@@ -33,7 +33,7 @@ module.exports = function(req, res) {
 };
 
 var checkData = function(data, callback) {
-	if(data.project && data.token && data.path) {
+	if(data.project && data.token && data.path && data.newpath) {
 		callback(null);
 	} else {
 		callback(new restify.InvalidContentError('Missing one or more parameters'));

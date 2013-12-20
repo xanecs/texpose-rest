@@ -13,6 +13,7 @@ exports.register = function(options, callback) {
         
         if(result) {
             callback(new restify.InvalidContentError('Username already exists'));
+            process.logger.debug('Received multiple registrations for ' + options.username);
             return;
         }
         
@@ -32,7 +33,7 @@ exports.register = function(options, callback) {
                 return;
             }
             callback(null);
-            console.log("New User: " + newUser.username);
+            process.logger.debug('New User: ' + newUser.username);
         });
     });
 };
@@ -51,10 +52,12 @@ exports.login = function(options, callback){
         }
         if(!result) {
             callback(new restify.InvalidCredentialsError('Username doesn\'t exist'));
+            process.logger.debug('Rejected login of ' + options.username + ' (invalid username)');
             return;
         }
         if(!cryptography.checkPassword(options.password, result.hash)) {
             callback(new restify.InvalidCredentialsError('Wrong password'));
+            process.logger.debug('Rejected password of ' + result.username);
             return;
         }
         authentication.newAuthentication({"username": result.username, "ip": options.ip}, function(err, token) {
@@ -71,6 +74,7 @@ exports.login = function(options, callback){
                 status: 'SUCCESS'
             };
             callback(null, response);
+            process.logger.debug(result.username + ' signed in');
         });
     });
 };

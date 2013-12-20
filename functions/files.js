@@ -1,9 +1,10 @@
 var dbmodels = require('./dbmodels.js');
 var restify = require('restify');
 var fs = require('fs');
-var nodefs = require('node-fs')
+var nodefs = require('node-fs');
 var config = require('../config.json');
-var project = require('./project.js')
+var project = require('./project.js');
+var path = require('path');
 
 exports.saveFile = function(options, file, callback) {
 	exists(options, function(err, result){
@@ -31,7 +32,10 @@ exports.saveFile = function(options, file, callback) {
 				    	return;
 				    }
 				    fs.writeFile(config.data_dir + '/' + options.project + '/' + options.path, file, function(err) {
-				    	console.log(err);
+				    	if(err) {
+				    		process.logger.error(err);
+				    		return;
+				    	}
 				    });
 				});
 				
@@ -67,7 +71,7 @@ var exists = function(options, callback) {
 				}
 			});
 		} else {
-			callback(null, true);
+			callback(null, true, result);
 		}
 	});
 };
@@ -141,5 +145,34 @@ exports.listFiles = function(options, callback) {
 		    }
 		}
 		callback(null, {data: output});
+	});
+};
+
+exports.renameFile = function(options, callback) {
+	exists({project: options.project, path: options.path}, function(err, ex, result) {
+		if(err) {
+			callback(new restify.InternalError('Error while querying database'));
+			process.logger.error(err);
+			return;
+		}
+		if(!ex) {
+			callback(new restify.InvalidArgumentError('File doesn\'t exist'));
+			return;
+		}
+		result.path = options.newpath;
+		fs.rename(config.data_dir + '/' + options.project + '/' + options.path, config.data_dir + '/' + options.project + '/' + options.newpath, function(err) {
+			if(err) {
+				process.logger.error(err);
+				return;
+			}
+		});
+		result.save(function(err, result) {
+			if(err) {
+				callback(new restify.InternalError('Error while saving to database'));
+				process.logger.error(err);
+				return;
+			}
+			callback(null, result);
+		});
 	});
 };

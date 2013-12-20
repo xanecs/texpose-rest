@@ -7,6 +7,7 @@ exports.user = mongoose.model('User', {
   "lastname": String,
   "registered": {type: Date, default: Date.now()},
   "hash": String,
+  "mainfile": String,
   "friends": [
     {
       "username": String,
@@ -35,6 +36,7 @@ exports.project = mongoose.model('Project', {
   "name": String,
   "description": String,
   "created": {type: Date, default: Date.now()},
+  "mainfile": String,
   "permissions": [
     {
       "username": String,
@@ -46,4 +48,10 @@ exports.project = mongoose.model('Project', {
 exports.file = mongoose.model('File', {
   "project": mongoose.Schema.Types.ObjectId,
   "path": String
+});
+
+exports.dlbsjob = mongoose.model('DLBSJob', {
+  "project": mongoose.Schema.Types.ObjectId,
+  "jobid": String,
+  "created": {type: Date, default: Date.now}
 });

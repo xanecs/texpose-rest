@@ -10,10 +10,11 @@ var cryptography = require('./cryptography.js');
  * - token
  */
 exports.checkAuthentication = function(options, callback) {
+
   dbmodels.authToken.findOne({"token": options.token}, function(err, result){
     if(err) {
-        //Token doesn't exist
-        callback(new restify.NotAuthorizedError('Not logged in'));
+        callback(new restify.InternalError('Error while querying database'));
+        process.logger.error(err);
         return;
     }
     if(!result) {
@@ -23,11 +24,13 @@ exports.checkAuthentication = function(options, callback) {
     if((Date.now() - result.lastuse) / 1000 > config.session_ttl) {
         //Token has expired
         callback(new restify.NotAuthorizedError('Token expired (Timeout)'));
+        process.logger.debug('Rejected token to username ' + result.username + ' from IP ' + options.ip + '(Expired)');
         return;
     }
     if(result.ip != options.ip) {
         //IP changed since last use
         callback(new restify.NotAuthorizedError('Token expired (IP)'));
+        process.logger.debug('Rejected token to username ' + result.username + ' from IP ' + options.ip + '(IP Changed)');
         return;
     }
     result.lastuse = Date.now();
@@ -38,6 +41,7 @@ exports.checkAuthentication = function(options, callback) {
             return;
         }
         callback(null, result.username);
+        process.logger.debug('Accepted token to username ' + result.username + ' from IP ' + options.ip);
     });
   });
 };
@@ -67,6 +71,7 @@ exports.newAuthentication = function(options, callback) {
                 callback(err);
                 return;
             }
+            process.logger.debug('Issued token to username ' + options.username + ' from IP ' + options.ip);
             callback(null, newAuth.token);
         });
     });

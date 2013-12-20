@@ -10,12 +10,19 @@ module.exports = {
 	},
 	project: {
 		new: require('./project/new.js'),
-		list: require('./project/list.js')
+		list: require('./project/list.js'),
+		compile: require('./project/compile.js')
 	},
 	file: {
 		new: require('./file/new.js'),
 		get: require('./file/get.js'),
 		list: require('./file/list.js'),
-		delete: require('./file/delete.js')
+		delete: require('./file/delete.js'),
+		rename: require('./file/rename.js')
+	},
+	job: {
+		status: require('./job/status.js'),
+		result: require('./job/result.js'),
+		log: require('./job/log.js')
 	}
 };

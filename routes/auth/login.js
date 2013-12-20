@@ -7,7 +7,6 @@ module.exports = function(req, res, next) {
     		res.send(err);
     		return;
     	}
-    	console.log(req.connection.remoteAddress);
     	user.login({
     		username: req.body.username,
     		password: req.body.password,
