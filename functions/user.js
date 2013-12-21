@@ -3,6 +3,7 @@ var dbmodels = require('./dbmodels.js');
 var restify = require('restify');
 var cryptography = require('./cryptography.js');
 var authentication = require('./authentication.js');
+var mail = require('./mail.js');
 
 exports.register = function(options, callback) {
     checkUsername({"username": options.username}, function(err, result){
@@ -35,8 +36,34 @@ exports.register = function(options, callback) {
             callback(null);
             process.logger.debug('New User: ' + newUser.username);
         });
+        mail.sendActivation({username: options.username, token: newUser.activation.token, email: options.email}, function(err) {
+
+        });
+
     });
 };
+
+exports.activate = function(options, callback) {
+    getUserByUsername({username: options.username, filter: 0}, function(err, result) {
+        if(err) {
+            callback(err);
+            return;
+        }
+        if(options.token != result.activation.token) {
+            callback(restify.InvalidArgumentError('Invalid Token'));
+            return;
+        }
+        result.activation.activated = true;
+        result.save(function(err) {
+            if(err) {
+                callback(restify.InternalError('Error while querying databse'));
+                process.logger.error(err);
+                return;
+            }
+            callback(null);
+        });
+    });
+}
 
 /*
  * options:
@@ -55,6 +82,13 @@ exports.login = function(options, callback){
             process.logger.debug('Rejected login of ' + options.username + ' (invalid username)');
             return;
         }
+
+        if(!result.activation.activated) {
+            callback(new restify.InvalidCredentialsError('User not activated'));
+            process.logger.debug('Rejected login of ' + options.username + ' (not activated)');
+            return;
+        }
+
         if(!cryptography.checkPassword(options.password, result.hash)) {
             callback(new restify.InvalidCredentialsError('Wrong password'));
             process.logger.debug('Rejected password of ' + result.username);
@@ -87,7 +121,8 @@ exports.login = function(options, callback){
 var getUserByUsername = function(options, callback) {
     dbmodels.user.findOne({"username": options.username}, function(err, result){
         if(err) {
-            callback(err);
+            callback(restify.InternalError('Error while querying databse'));
+            process.logger.error(err);
             return;
         }
         if(!result) {

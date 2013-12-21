@@ -6,12 +6,14 @@ module.exports = {
 	},
 	user: {
 		register: require('./user/register.js'),
-		checkUsername: require('./user/checkUsername.js')
+		checkUsername: require('./user/checkUsername.js'),
+		activate: require('./user/activate.js')
 	},
 	project: {
 		new: require('./project/new.js'),
 		list: require('./project/list.js'),
-		compile: require('./project/compile.js')
+		compile: require('./project/compile.js'),
+		edit: require('./project/edit.js')
 	},
 	file: {
 		new: require('./file/new.js'),

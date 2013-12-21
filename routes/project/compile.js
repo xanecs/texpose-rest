@@ -13,16 +13,22 @@ module.exports = function(req, res) {
 				res.send(err);
 				return;
 			}
-			project.compile({project: req.body.project}, function(err, result){
+			project.isAuthenticated({username: result, project: req.body.project}, function(err, result){
 				if(err) {
 					res.send(err);
 					return;
 				}
-				res.send({
-					jobid: result.jobid,
-					state: result.status
-				});
+				project.compile({project: req.body.project}, function(err, result){
+					if(err) {
+						res.send(err);
+						return;
+					}
+					res.send({
+						jobid: result.jobid,
+						state: result.status
+					});
 
+				});
 			});
 		});
 		

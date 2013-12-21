@@ -9,7 +9,8 @@
     "mongoose": "*",
     "base58-native": "*",
     "node-fs": "*",
-    "colors": "*"
+    "colors": "*",
+    "mailgun": "*"
   },
   "devDependencies": {}
 }

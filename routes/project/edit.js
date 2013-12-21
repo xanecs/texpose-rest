@@ -18,7 +18,7 @@ module.exports = function(req, res) {
 					res.send(err);
 					return;
 				}
-				project.delete({project: req.body.project}, function(err, result){
+				project.changeSettings({name: req.body.name, description: req.body.description, mainfile: req.body.mnainfile, project: req.body.project}, function(err, result){
 					if(err) {
 						res.send(err);
 						return;
@@ -33,7 +33,7 @@ module.exports = function(req, res) {
 };
 
 var checkData = function(data, callback) {
-	if(data.token && data.project) {
+	if(data.name && data.token && data.mainfile && data.project) {
 		callback(null);
 	} else {
 		callback(new restify.InvalidContentError('Missing one or more parameters'));

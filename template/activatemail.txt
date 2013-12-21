@@ -1,0 +1,6 @@
+Ihre E-Mail Adresse wurde bei TeXpose registriert.
+
+Um ihre Registrierung bei abzuschließen, klicken sie bitte auf folgenden Link:
+$LINK$
+
+Wenn sie die Registrierung nicht selbst vorgenommen haben, ignorieren Sie diese E-Mail einfach.

@@ -126,13 +126,17 @@ exports.changeSettings = function(options, callback) {
 			callback(new restify.InternalError('Error while querying database'));
 			return;
 		}
+
+		if(!result) {
+			callback(new restify.InvalidArgumentError('This project does not exist'));
+			return;
+		}
+
 		if(options.name) {
 			result.name = options.name;
 		}
 
-		if(options.description) {
-			result.description = options.description;
-		}
+		result.description = options.description;
 
 		if(options.mainfile) {
 			result.mainfile = options.mainfile;
