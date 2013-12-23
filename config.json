@@ -3,7 +3,7 @@
   "session_ttl": 172800,
   "port": 3000,
   "webroot": "http://localhost:5353",
-  "url": "http://127.0.0.1:5353",
+  "url": "http://10.0.2.2:5353",
   "data_dir": "/var/texpose-projects",
   "tex_template": "./template/main.tex",
   "dlbs": "http://10.0.2.2:8000",

@@ -180,6 +180,7 @@ exports.compile = function(options, callback) {
 			}, function(err, req, res, obj) {
 				if(err) {
 					callback(new restify.InternalError('Error while compiling document'));
+					process.logger.error(err);
 					return;
 				}
 				callback(null, obj);
