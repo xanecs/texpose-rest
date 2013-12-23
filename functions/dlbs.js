@@ -19,7 +19,7 @@ var getStatus = function(options, callback) {
 			callback(new restify.InvalidArgumentError('This job doesn\'t exist'));
 			return;
 		}
-		process.logger.debug('Getting status of job: ' + option.jobid);
+		process.logger.debug('Getting status of job: ' + options.jobid);
 		process.dlbsClient.post('/getjob', {
 			jobid: options.jobid
 		}, function(err, req, res, obj) {
