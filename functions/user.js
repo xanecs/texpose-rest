@@ -30,7 +30,8 @@ exports.register = function(options, callback) {
         });
         newUser.save(function(err){
             if(err) {
-                callback(err);
+                callback(new restify.InternalError('Error while writing to database'));
+                process.logger.error(err);
                 return;
             }
             callback(null);
@@ -155,7 +156,8 @@ exports.getUserByUsername = getUserByUsername;
 var checkUsername = function(options, callback) {
     dbmodels.user.findOne({"username": options.username}, function(err, result){
         if(err) {
-            callback(err);
+            callback(new restify.InternalError('Error while querying database'));
+            process.logger.error(err);
             return;
         }
         

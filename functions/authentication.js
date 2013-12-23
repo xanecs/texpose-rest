@@ -54,7 +54,8 @@ exports.checkAuthentication = function(options, callback) {
 exports.newAuthentication = function(options, callback) {
     dbmodels.authToken.find({"username": options.username}, function(err, result) {
         if(err) {
-            callback(err);
+            callback(new restify.InternalError('Error while querying database'));
+            process.logger.error(err);
             return;
         }
         result.forEach(function(doc){
@@ -68,7 +69,8 @@ exports.newAuthentication = function(options, callback) {
         });
         newAuth.save(function(err){
             if(err) {
-                callback(err);
+                callback(new restify.InternalError('Error while writing to database'));
+                process.logger.error(err);
                 return;
             }
             process.logger.debug('Issued token to username ' + options.username + ' from IP ' + options.ip);

@@ -18,7 +18,7 @@ module.exports = function(req, res) {
 					res.send(err);
 					return;
 				}
-				project.changeSettings({name: req.body.name, description: req.body.description, mainfile: req.body.mnainfile, project: req.body.project}, function(err, result){
+				project.changeSettings({name: req.body.name, description: req.body.description, mainfile: req.body.mainfile, project: req.body.project}, function(err, result){
 					if(err) {
 						res.send(err);
 						return;

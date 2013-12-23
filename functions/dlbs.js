@@ -19,12 +19,13 @@ var getStatus = function(options, callback) {
 			callback(new restify.InvalidArgumentError('This job doesn\'t exist'));
 			return;
 		}
-
+		process.logger.debug('Getting status of job: ' + optionsy.jobid);
 		process.dlbsClient.post('/getjob', {
 			jobid: options.jobid
 		}, function(err, req, res, obj) {
 			if(err) {
-				callback(new restify.InternalError('Error while compiling document'));
+				callback(new restify.InternalError('Error while getting status from build server'));
+				process.logger.error(err);
 				return;
 			}
 			callback(null, obj);
@@ -45,17 +46,9 @@ exports.getResult = function(options, callback) {
 			return;
 		}
 		console.log(url.parse(result.output.document).path);
-		/*process.dlbsClient.get(url.parse(result.output.document).path, function(err, req, res, obj) {
-			if(err) {
-				callback(new restify.InternalError('Error while retrieving document from build server'));
-				return;
-			}
-			var pdf = res.read();
-		   	callback(null, res.read);
-		   	fs.writeFileSync('test.pdf', res.body);
-		});*/
 		var rqurl = url.parse(result.output.document);
 		var rqoptions = {hostname: rqurl.hostname, port: rqurl.port, path: rqurl.path, method: 'GET'};
+		process.logger.debug('Retreiving result of job: ' + result.jobid);
 		http.request(rqoptions, function(res) {
 			callback(null, res);
 		}).end();
@@ -72,9 +65,11 @@ exports.getLog = function(options, callback) {
 			callback(new restify.InvalidArgumentError('Job is not done yet'));
 			return;
 		}
+		process.logger.debug('Retreiving result of job: ' + result.jobid);
 		process.dlbsClient.get(url.parse(result.output.log).path, function(err, req, res, obj) {
 			if(err) {
 				callback(new restify.InternalError('Error while retrieving document from build server'));
+				process.logger.error(err);
 				return;
 			}
 			callback(null, res.body);

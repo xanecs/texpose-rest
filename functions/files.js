@@ -16,6 +16,7 @@ exports.saveFile = function(options, file, callback) {
 			fs.writeFile(config.data_dir + '/' + options.project + '/' + options.path, file, function(err) {
 				if(err) {
 					callback(new restify.InternalError('Error while writing file to disk'));
+					process.logger.error(err);
 					return;
 				}
 				callback(null, true);
@@ -28,7 +29,7 @@ exports.saveFile = function(options, file, callback) {
 				}
 				fs.mkdir(config.data_dir + '/' + options.project + '/' + options.path.substring(0, options.path.lastIndexOf("/")), 0777, true, function (err) {
 				    if (err) {
-				    	console.log(err);
+				    	process.logger.error(err);
 				    	return;
 				    }
 				    fs.writeFile(config.data_dir + '/' + options.project + '/' + options.path, file, function(err) {
@@ -44,7 +45,12 @@ exports.saveFile = function(options, file, callback) {
 					project: options.project,
 					path: options.path
 				});
-				newFile.save();
+				newFile.save(function(err) {
+					if(err) {
+						process.logger.error(err);
+						return;
+					}
+				});
 				callback(null, false);
 			});
 		}
@@ -55,6 +61,7 @@ var exists = function(options, callback) {
 	dbmodels.file.findOne({project: options.project, path: options.path}, function(err, result) {
 		if(err) {
 			callback(new restify.InternalError('Error while querying database'));
+			process.logger.error(err);
 			return;
 		}
 		if(!result) {
@@ -66,7 +73,12 @@ var exists = function(options, callback) {
 				if(exists) {
 					callback(null, true);
 				} else {
-					dbmodels.file.remove({_id: result._id}, function(err){  });
+					dbmodels.file.remove({_id: result._id}, function(err){
+						if(err) {
+							process.logger.error(err);
+							return;
+						}
+					});
 					callback(null, false);
 				}
 			});
@@ -80,11 +92,17 @@ exports.deleteFile = function(options, callback) {
 	dbmodels.file.remove({path: options.path, project: options.project}, function(err, result){
 		if(err) {
 			callback(new restify.InternalError('Error while removing item from database'));
+			process.logger.error(err);
 			return;
 		}
 		callback(null);
 	});
-	fs.unlink(options.path, function(err){  });
+	fs.unlink(options.path, function(err){
+		if(err) {
+			process.logger.error(err);
+			return;
+		}
+	});
 };
 
 exports.getFile = function(options, callback) {
@@ -100,6 +118,7 @@ exports.getFile = function(options, callback) {
 		fs.readFile(config.data_dir + '/' + options.project + '/' + options.path, function(err, data) {
 			if(err) {
 				callback(new restify.InternalError('Error while reading file'));
+				process.logger.error(err);
 				return;
 			}
 			callback(null, data);
@@ -111,6 +130,7 @@ exports.listFiles = function(options, callback) {
 	dbmodels.file.find({project: options.project}, function(err, result) {
 		if(err) {
 			callback(new restify.InternalError('Error while querying database'));
+			process.logger.error(err);
 			return;
 		}
 
