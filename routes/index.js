@@ -13,7 +13,8 @@ module.exports = {
 		new: require('./project/new.js'),
 		list: require('./project/list.js'),
 		compile: require('./project/compile.js'),
-		edit: require('./project/edit.js')
+		edit: require('./project/edit.js'),
+		delete: require('./project/delete.js')
 	},
 	file: {
 		new: require('./file/new.js'),

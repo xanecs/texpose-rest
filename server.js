@@ -68,6 +68,7 @@ server.post('/project/new', routes.project.new);
 server.post('/project/list', routes.project.list);
 server.post('/project/compile', routes.project.compile);
 server.post('/project/edit', routes.project.edit);
+server.post('/project/delete', routes.project.delete);
 
 server.post('/file/new', routes.file.new);
 server.get('/file/get/:project/:token/:path', routes.file.get);
