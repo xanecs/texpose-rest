@@ -2,7 +2,7 @@
   "name": "TeXpose",
   "description": "",
   "version": "0.1.0",
-  "author": "leopnadi",
+  "author": "leonadi",
   "dependencies": {
     "restify": "*",
     "bcrypt-nodejs": "*",
@@ -10,7 +10,8 @@
     "base58-native": "*",
     "node-fs": "*",
     "colors": "*",
-    "mailgun": "*"
+    "mailgun": "*",
+	"memwatch": "*"
   },
   "devDependencies": {}
 }

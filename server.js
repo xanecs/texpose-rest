@@ -8,6 +8,11 @@ var mongoose = require('mongoose');
 var routes = require('./routes');
 process.logger = require('./functions/logger.js');
 
+var memwatch = require('memwatch');
+memwatch.on('leak', function(info){
+	process.logger.error(info);
+});
+
 mongoose.connect(config.database, {}, function(err){
   if(err) {
     process.logger.error(err);
