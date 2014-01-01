@@ -22,6 +22,7 @@ module.exports = function(req, res, next) {
 };
 
 var checkData = function(data, callback) {
+    process.logger.debug(JSON.stringify(data));
     if(data.username && data.password) {
         callback(null);
     } else {

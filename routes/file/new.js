@@ -4,7 +4,8 @@ var authentication = require('../../functions/authentication.js');
 var project = require('../../functions/project.js');
 
 module.exports = function(req, res) {
-	authentication.checkAuthentication({token: req.header('token'), ip: req.connection.remoteAddress}, function(err, result) {
+	req.pause();
+    authentication.checkAuthentication({token: req.header('token'), ip: req.connection.remoteAddress}, function(err, result) {
 		if(err) {
 			res.send(err);
 			return;
@@ -15,7 +16,7 @@ module.exports = function(req, res) {
 				return;
 			}
 
-			file.saveFile({project: req.header('project'), path: req.header('path')}, req.body, function(err, result) {
+			file.saveFile({project: req.header('project'), path: req.header('path')}, req, function(err, result) {
 				if(err) {
 					res.send(err);
 					return;

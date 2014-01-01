@@ -3,6 +3,7 @@ var restify = require('restify');
 var fs = require('fs');
 var config = require('../config.json');
 var files = require('./files.js');
+var path = require('path');
 
 exports.newProject = function(options, callback) {
 	var newProject = new dbmodels.project({
@@ -29,19 +30,16 @@ exports.newProject = function(options, callback) {
 				callback(new restify.InternalError('Error while creating directory'));
 				return;
 			}
-			fs.readFile(config.tex_template, function(err, data) {
-				if(err) {
-					callback(new restify.InternalError('Error while copying template'));
-					return;
-				}
-				files.saveFile({project: result._id, path: 'main.tex'}, data, function(err) {
-					if(err) {
-						callback(new restify.InternalError('Error while copying template'));
-						return;
-					}
-					callback(null, result);
-				});
-			});
+
+            var data = fs.createReadStream(path.resolve(_dirname, config.tex_template));
+
+            files.saveFile({project: result._id, path: 'main.tex'}, data, function(err) {
+                if(err) {
+                    callback(new restify.InternalError('Error while copying template'));
+                    return;
+                }
+                callback(null, result);
+            });
 			
 		});
 		

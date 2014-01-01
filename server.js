@@ -6,11 +6,22 @@ var user = require('./functions/user.js');
 var config = require('./config.json');
 var mongoose = require('mongoose');
 var routes = require('./routes');
+
+require('nodetime').profile({
+    accountKey: '951fc80698e2b71e9d46da8a6acaafac64093372',
+    appName: 'TeXpose'
+});
+
 process.logger = require('./functions/logger.js');
 
 var memwatch = require('memwatch');
+
 memwatch.on('leak', function(info){
 	process.logger.error(info);
+});
+
+memwatch.on('stats', function(stats) {
+    process.logger.info(stats);
 });
 
 mongoose.connect(config.database, {}, function(err){
@@ -52,7 +63,7 @@ function unknownMethodHandler(req, res) {
 }
 
 server.use(restify.fullResponse());
-server.use(restify.bodyParser({ mapParams: false }));
+//server.use(restify.bodyParser());
 server.use(function(req, res, next) {
   process.logger.debug('Request to: ' + req.url);
   return next();
@@ -60,28 +71,29 @@ server.use(function(req, res, next) {
 
 server.on('MethodNotAllowed', unknownMethodHandler);
 
+var bpo = {mapParams: false};
 
-server.post('/user/register', routes.user.register);
+server.post('/user/register', restify.bodyParser(bpo), routes.user.register);
 server.get('/user/checkusername/:username', routes.user.checkUsername);
-server.get('/user/activate/:username/:token', routes.user.activate);
+server.get('/user/activate/:username/:token', restify.bodyParser(), routes.user.activate);
 
-server.post('/auth/login', routes.auth.login);
-server.post('/auth/renewtoken', routes.auth.renewToken);
-server.post('/auth/getuserinfo', routes.auth.getUserInfo);
+server.post('/auth/login', restify.bodyParser(bpo), routes.auth.login);
+server.post('/auth/renewtoken', restify.bodyParser(bpo), routes.auth.renewToken);
+server.post('/auth/getuserinfo', restify.bodyParser(bpo), routes.auth.getUserInfo);
 
-server.post('/project/new', routes.project.new);
-server.post('/project/list', routes.project.list);
-server.post('/project/compile', routes.project.compile);
-server.post('/project/edit', routes.project.edit);
-server.post('/project/delete', routes.project.delete);
+server.post('/project/new', restify.bodyParser(bpo), routes.project.new);
+server.post('/project/list', restify.bodyParser(bpo), routes.project.list);
+server.post('/project/compile', restify.bodyParser(bpo), routes.project.compile);
+server.post('/project/edit', restify.bodyParser(bpo), routes.project.edit);
+server.post('/project/delete', restify.bodyParser(bpo), routes.project.delete);
 
 server.post('/file/new', routes.file.new);
 server.get('/file/get/:project/:token/:path', routes.file.get);
-server.post('/file/list', routes.file.list);
-server.post('/file/delete', routes.file.delete);
-server.post('/file/rename', routes.file.rename);
+server.post('/file/list', restify.bodyParser(bpo), routes.file.list);
+server.post('/file/delete', restify.bodyParser(bpo), routes.file.delete);
+server.post('/file/rename', restify.bodyParser(bpo), routes.file.rename);
 
-server.post('/job/status', routes.job.status);
+server.post('/job/status', restify.bodyParser(bpo), routes.job.status);
 server.get('/job/result/:jobid/:token', routes.job.result);
 server.get('/job/log/:jobid/:token', routes.job.log);
 

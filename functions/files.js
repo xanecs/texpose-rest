@@ -13,7 +13,7 @@ exports.saveFile = function(options, file, callback) {
 			return;
 		}
 		if(result) {
-			fs.writeFile(config.data_dir + '/' + options.project + '/' + options.path, file, function(err) {
+			writeFile(options, file, function(err) {
 				if(err) {
 					callback(new restify.InternalError('Error while writing file to disk'));
 					process.logger.error(err);
@@ -27,34 +27,56 @@ exports.saveFile = function(options, file, callback) {
 					callback(err);
 					return;
 				}
-				fs.mkdir(config.data_dir + '/' + options.project + '/' + options.path.substring(0, options.path.lastIndexOf("/")), 0777, true, function (err) {
+				nodefs.mkdir(config.data_dir + '/' + options.project + '/' + options.path.substring(0, options.path.lastIndexOf("/")), 0777, true, function (err) {
 				    if (err) {
 				    	process.logger.error(err);
 				    	return;
 				    }
-				    fs.writeFile(config.data_dir + '/' + options.project + '/' + options.path, file, function(err) {
+				    writeFile(options, file, function(err) {
 				    	if(err) {
+                            callabck(err);
 				    		process.logger.error(err);
 				    		return;
 				    	}
+
+                        var newFile = new dbmodels.file({
+                            project: options.project,
+                            path: options.path
+                        });
+
+                        newFile.save(function(err) {
+                            if(err) {
+                                process.logger.error(err);
+                                return;
+                            }
+                        });
+
+                        callback(null, false);
 				    });
 				});
-				
-				
-				var newFile = new dbmodels.file({
-					project: options.project,
-					path: options.path
-				});
-				newFile.save(function(err) {
-					if(err) {
-						process.logger.error(err);
-						return;
-					}
-				});
-				callback(null, false);
 			});
 		}
 	});
+};
+
+var writeFile = function(options, data, callback) {
+    var output = fs.createWriteStream(config.data_dir + '/' + options.project + '/' + options.path);
+    data.on('data', function(chunk) {
+        output.write(chunk);
+    });
+    data.on('error', function(err) {
+        try {
+            output.end()
+        }
+        catch (e) {}
+        callback(err);
+        process.logger.error(err);
+    });
+    data.on('end', function() {
+        output.end()
+        callback(null);
+    });
+    data.resume();
 };
 
 var exists = function(options, callback) {
@@ -97,7 +119,7 @@ exports.deleteFile = function(options, callback) {
 		}
 		callback(null);
 	});
-	fs.unlink(options.path, function(err){
+	fs.unlink(config.data_dir + '/' + options.project + '/' + options.path, function(err){
 		if(err) {
 			process.logger.error(err);
 			return;
