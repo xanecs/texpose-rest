@@ -31,7 +31,7 @@ exports.newProject = function(options, callback) {
 				return;
 			}
 
-            var data = fs.createReadStream(path.resolve(_dirname, config.tex_template));
+            var data = fs.createReadStream(path.resolve(__dirname, config.tex_template));
 
             files.saveFile({project: result._id, path: 'main.tex'}, data, function(err) {
                 if(err) {

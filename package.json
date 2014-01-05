@@ -11,7 +11,8 @@
     "node-fs": "*",
     "colors": "*",
     "mailgun": "*",
-	"memwatch": "*"
+    "memwatch": "~0.2.2",
+    "nodetime": "~0.8.15"
   },
   "devDependencies": {}
 }

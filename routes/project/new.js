@@ -18,7 +18,8 @@ module.exports = function(req, res) {
 					res.send(err);
 					return;
 				}
-				res.send(result);
+                                //process.logger.debug(result);
+				res.send({result});
 
 			});
 		});
