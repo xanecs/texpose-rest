@@ -19,7 +19,7 @@ module.exports = function(req, res) {
 					return;
 				}
                                 //process.logger.debug(result);
-				res.send({result});
+				res.send(result);
 
 			});
 		});

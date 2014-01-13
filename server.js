@@ -7,29 +7,20 @@ var config = require('./config.json');
 var mongoose = require('mongoose');
 var routes = require('./routes');
 
-require('nodetime').profile({
-    accountKey: '951fc80698e2b71e9d46da8a6acaafac64093372',
-    appName: 'TeXpose'
-});
-
 process.logger = require('./functions/logger.js');
 
 var memwatch = require('memwatch');
 
 memwatch.on('leak', function(info){
-	process.logger.error(info);
-});
-
-memwatch.on('stats', function(stats) {
-    process.logger.info(stats);
+    process.logger.error(info);
 });
 
 mongoose.connect(config.database, {}, function(err){
-  if(err) {
-    process.logger.error(err);
-  } else {
-    process.logger.info('Database connection established to ' + config.database);
-  }
+    if(err) {
+        process.logger.error(err);
+    } else {
+        process.logger.info('Database connection established to ' + config.database);
+    }
 });
 
 var server = restify.createServer({
@@ -46,27 +37,27 @@ var server = restify.createServer({
 
 function unknownMethodHandler(req, res) {
     if (req.method.toLowerCase() === 'options') {
-	    //console.log('received an options method request');
-	    var allowHeaders = ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'Origin', 'X-Requested-With', 'Project', 'Token', 'Path']; // added Origin & X-Requested-With
+        //console.log('received an options method request');
+        var allowHeaders = ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'Origin', 'X-Requested-With', 'Project', 'Token', 'Path']; // added Origin & X-Requested-With
 
-	    if (res.methods.indexOf('OPTIONS') === -1) res.methods.push('OPTIONS');
+        if (res.methods.indexOf('OPTIONS') === -1) res.methods.push('OPTIONS');
 
-	    res.header('Access-Control-Allow-Credentials', true);
-	    res.header('Access-Control-Allow-Headers', allowHeaders.join(', '));
-	    res.header('Access-Control-Allow-Methods', res.methods.join(', '));
-	    res.header('Access-Control-Allow-Origin', req.headers.origin);
+        res.header('Access-Control-Allow-Credentials', true);
+        res.header('Access-Control-Allow-Headers', allowHeaders.join(', '));
+        res.header('Access-Control-Allow-Methods', res.methods.join(', '));
+        res.header('Access-Control-Allow-Origin', req.headers.origin);
 
-	    return res.send(204);
+        return res.send(204);
     }
     else
-    	return res.send(new restify.MethodNotAllowedError());
+        return res.send(new restify.MethodNotAllowedError());
 }
 
 server.use(restify.fullResponse());
 //server.use(restify.bodyParser());
 server.use(function(req, res, next) {
-  process.logger.debug('Request to: ' + req.url);
-  return next();
+    process.logger.debug('Request to: ' + req.url);
+    return next();
 });
 
 server.on('MethodNotAllowed', unknownMethodHandler);
@@ -76,6 +67,7 @@ var bpo = {mapParams: false};
 server.post('/user/register', restify.bodyParser(bpo), routes.user.register);
 server.get('/user/checkusername/:username', routes.user.checkUsername);
 server.get('/user/activate/:username/:token', restify.bodyParser(), routes.user.activate);
+server.post('/user/edit', restify.bodyParser(bpo), routes.user.edit);
 
 server.post('/auth/login', restify.bodyParser(bpo), routes.auth.login);
 server.post('/auth/renewtoken', restify.bodyParser(bpo), routes.auth.renewToken);
@@ -100,5 +92,5 @@ server.get('/job/log/:jobid/:token', routes.job.log);
 process.dlbsClient = restify.createJsonClient({url: config.dlbs});
 
 server.listen(config.port, function() {
-  process.logger.info('Server listening on port ' + config.port);
+    process.logger.info('Server listening on port ' + config.port);
 });

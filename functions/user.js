@@ -170,3 +170,41 @@ var checkUsername = function(options, callback) {
 };
 
 exports.checkUsername = checkUsername;
+
+exports.edit = function(options, callback) {
+    getUserByUsername({username: options.username}, function(err, result) {
+        if(err) {
+            callback(err);
+            return;
+        }
+        if(!result) {
+            callback(new restify.InvalidCredentialsError('Username doesn\'t exist'));
+            process.logger.debug('Rejected login of ' + options.username + ' (invalid username)');
+            return;
+        }
+
+        if(options.firstname) {
+            result.firstname = options.firstname;
+        }
+
+        if(options.lastname) {
+            result.lastname = options.lastname;
+        }
+
+        if(options.email) {
+            result.email = options.email;
+        }
+
+        if(options.password) {
+            result.hash = cryptography.calculateHash(options.password);
+        }
+
+        result.save(function(err, result) {
+            if(err) {
+                callback(new restify.InternalError('Error while writing to database'));
+                return;
+            }
+            callback(null, result);
+        });
+    });
+}

@@ -7,7 +7,8 @@ module.exports = {
 	user: {
 		register: require('./user/register.js'),
 		checkUsername: require('./user/checkUsername.js'),
-		activate: require('./user/activate.js')
+		activate: require('./user/activate.js'),
+		edit: require('./user/edit.js')
 	},
 	project: {
 		new: require('./project/new.js'),
