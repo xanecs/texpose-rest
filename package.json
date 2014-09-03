@@ -4,13 +4,14 @@
   "version": "0.1.0",
   "author": "leonadi",
   "dependencies": {
-    "restify": "*",
-    "bcrypt-nodejs": "*",
-    "mongoose": "*",
     "base58-native": "*",
-    "node-fs": "*",
+    "bcrypt-nodejs": "*",
     "colors": "*",
     "mailgun": "*",
+    "mongoose": "*",
+    "newrelic": "^1.10.3",
+    "node-fs": "*",
+    "restify": "*"
   },
   "devDependencies": {}
 }

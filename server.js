@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+require('newrelic');
 
 var restify = require('restify');
 var fs = require('fs');
