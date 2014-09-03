@@ -10,7 +10,9 @@ var routes = require('./routes');
 
 process.logger = require('./functions/logger.js');
 
-mongoose.connect(config.database, {}, function(err){
+var database = process.env.MONGO_URL || config.database;
+
+mongoose.connect(database, {}, function(err){
     if(err) {
         process.logger.error(err);
     } else {
@@ -79,6 +81,8 @@ server.get('/job/log/:jobid/:token', routes.job.log);
 
 process.dlbsClient = restify.createJsonClient({url: config.dlbs});
 
-server.listen(config.port, function() {
+var port = process.env.PORT || config.port
+
+server.listen(port, function() {
     process.logger.info('Server listening on port ' + config.port);
 });
