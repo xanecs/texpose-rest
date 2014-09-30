@@ -53,8 +53,6 @@ server.use(function(req, res, next) {
 
 server.use(cors);
 
-server.on('MethodNotAllowed', unknownMethodHandler);
-
 var bpo = {mapParams: false};
 
 server.post('/user/register', restify.bodyParser(bpo), routes.user.register);
