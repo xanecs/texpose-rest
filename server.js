@@ -51,7 +51,7 @@ server.use(function(req, res, next) {
     return next();
 });
 
-server.use(restify.CORS)
+server.use(cors);
 
 server.on('MethodNotAllowed', unknownMethodHandler);
 
