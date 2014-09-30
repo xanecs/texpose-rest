@@ -51,7 +51,11 @@ server.use(function(req, res, next) {
     return next();
 });
 
-server.use(cors);
+server.use(cors)
+
+server.on('MethodNotAllowed', function(req, res) {
+  cors(req, res, function() {res.send(204);});
+});
 
 var bpo = {mapParams: false};
 
