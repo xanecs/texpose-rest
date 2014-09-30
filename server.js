@@ -34,15 +34,14 @@ var server = restify.createServer({
   //}
 });
 
-function unknownMethodHandler(req, res) {
-        //console.log('received an options method request');
-        var allowHeaders = ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'Origin', 'X-Requested-With', 'Project', 'Token', 'Path']; // added Origin & X-Requested-With
+function cors(req, res, next) {
+        var allowHeaders = ['Accept', 'Accept-Version', 'Content-Type', 'Api-Version', 'Origin', 'X-Requested-With', 'Project', 'Token', 'Path'];
         res.header('Access-Control-Allow-Credentials', true);
         res.header('Access-Control-Allow-Headers', allowHeaders.join(', '));
         res.header('Access-Control-Allow-Methods', res.methods.join(', '));
         res.header('Access-Control-Allow-Origin', req.headers.origin);
 
-        return res.send(204);
+        return next()
 }
 
 server.use(restify.fullResponse());
@@ -51,6 +50,8 @@ server.use(function(req, res, next) {
     process.logger.debug('Request to: ' + req.url);
     return next();
 });
+
+server.use(restify.CORS)
 
 server.on('MethodNotAllowed', unknownMethodHandler);
 
