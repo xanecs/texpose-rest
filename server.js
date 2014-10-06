@@ -10,9 +10,9 @@ var routes = require('./routes');
 
 process.logger = require('./functions/logger.js');
 
-console.log(process.env.MONGO_URL);
+console.log(process.env.MONGODB_URL);
 
-var database = process.env.MONGO_URL || config.database;
+var database = process.env.MONGODB_URL || config.database;
 
 mongoose.connect(database, {}, function(err){
     if(err) {
